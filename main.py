@@ -1,4 +1,5 @@
 import random
+import json
 
 class Cell:
     def __init__(self, alive=False):
@@ -67,6 +68,23 @@ class Game:
                     live_neighbors += int(self.board.cells[i][j].alive)
         return live_neighbors
 
+    def save_game_state(self, file_path):
+        game_state = {
+            'rows': self.board.rows,
+            'cols': self.board.cols,
+            'cells': [[int(cell.alive) for cell in row] for row in self.board.cells]
+        }
+
+        with open(file_path, 'w') as file:
+            json.dump(game_state, file)
+
+    def load_game_state(self, file_path):
+        with open(file_path, 'r') as file:
+            game_state = json.load(file)
+
+        self.board = Board(game_state['rows'], game_state['cols'])
+        self.board.cells = [[Cell(alive=bool(cell)) for cell in row] for row in game_state['cells']]
+
 if __name__ == "__main__":
     game = Game()
     rows = int(input("Enter the number of rows: "))
@@ -75,3 +93,13 @@ if __name__ == "__main__":
     game.initialize_board(rows, cols, density)
     steps = int(input("Enter the number of simulation steps: "))
     game.simulate(steps)
+
+    # Save game state to a file
+    file_path = input("Enter the file path to save the game state: ")
+    game.save_game_state(file_path)
+
+    # Load game state from a file
+    loaded_game = Game()
+    loaded_file_path = input("Enter the file path to load the game state: ")
+    loaded_game.load_game_state(loaded_file_path)
+    loaded_game.simulate(steps)
