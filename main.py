@@ -14,6 +14,8 @@ class Board:
     def generate_random_board(self, num_living_cells):
         for _ in range(num_living_cells):
             row, col = random.randint(0, self.rows - 1), random.randint(0, self.cols - 1)
+            while self.cells[row][col].alive == True:
+                row, col = random.randint(0, self.rows - 1), random.randint(0, self.cols - 1)
             self.cells[row][col].alive = True
 
     def generate_random_board_density(self, density):
