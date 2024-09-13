@@ -1,6 +1,7 @@
 import random
 import json
 
+
 class Cell:
     def __init__(self, alive=False):
         self.alive = alive
